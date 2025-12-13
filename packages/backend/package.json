@@ -1,0 +1,9 @@
+{
+  "name": "@momentum/backend",
+  "version": "0.1.0",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@momentum/database": "workspace:*"
+  }
+}
