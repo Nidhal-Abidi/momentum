@@ -1,21 +1,25 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { DM_Sans, IBM_Plex_Mono } from "next/font/google";
+import { SessionProvider } from "next-auth/react";
+import { DomainsProvider } from "@/lib/contexts";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--font-ibm-plex-mono",
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Momentum",
-  description:
-    "This app organizes by life domains with calendars side-by-side—making life balance visible at a glance. It's a dashboard for your whole life, not just habit checkboxes.",
+  title: "Momentum - Habit Tracker",
+  description: "Track your life domains and build lasting habits",
 };
 
 export default function RootLayout({
@@ -24,11 +28,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${dmSans.variable} ${ibmPlexMono.variable} font-sans antialiased`}
       >
-        {children}
+        <SessionProvider>
+          <DomainsProvider>
+            {children}
+          </DomainsProvider>
+        </SessionProvider>
       </body>
     </html>
   );

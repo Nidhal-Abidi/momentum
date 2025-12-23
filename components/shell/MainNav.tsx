@@ -1,0 +1,58 @@
+"use client";
+
+import { Calendar, FolderKanban, Target, BarChart3 } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+export interface NavItem {
+  label: string;
+  href: string;
+  isActive?: boolean;
+}
+
+interface MainNavProps {
+  items: NavItem[];
+  onNavigate?: (href: string) => void;
+}
+
+const icons: Record<string, React.ComponentType<{ className?: string }>> = {
+  Calendar: Calendar,
+  Domains: FolderKanban,
+  "Goals & Streaks": Target,
+  Dashboard: BarChart3,
+};
+
+export function MainNav({ items, onNavigate }: MainNavProps) {
+  return (
+    <ul role="list" className="flex flex-1 flex-col gap-y-1">
+      {items.map((item) => {
+        const Icon = icons[item.label];
+        return (
+          <li key={item.href}>
+            <button
+              onClick={() => onNavigate?.(item.href)}
+              className={cn(
+                "group flex w-full items-center gap-x-3 rounded-lg px-3 py-2.5 text-sm font-semibold leading-6 transition-colors",
+                item.isActive
+                  ? "bg-indigo-500 text-white"
+                  : "text-stone-700 hover:bg-stone-100 dark:text-stone-300 dark:hover:bg-stone-800"
+              )}
+            >
+              {Icon && (
+                <Icon
+                  className={cn(
+                    "size-5 shrink-0",
+                    item.isActive
+                      ? "text-white"
+                      : "text-stone-400 dark:text-stone-500"
+                  )}
+                />
+              )}
+              {item.label}
+            </button>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+

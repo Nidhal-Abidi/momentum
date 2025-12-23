@@ -1,15 +1,48 @@
+
+/* Import Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap");
+
 @import "tailwindcss";
+
+
+@theme inline {
+  /* Typography */
+  --font-sans: "DM Sans", var(--font-dm-sans), sans-serif;
+  --font-mono: "IBM Plex Mono", var(--font-ibm-plex-mono), monospace;
+
+  /* Primary Colors - Indigo */
+  --color-primary-50: oklch(0.97 0.01 270);
+  --color-primary-100: oklch(0.94 0.03 270);
+  --color-primary-200: oklch(0.88 0.06 270);
+  --color-primary-300: oklch(0.79 0.11 270);
+  --color-primary-400: oklch(0.66 0.18 270);
+  --color-primary-500: oklch(0.55 0.22 270);
+  --color-primary-600: oklch(0.46 0.22 270);
+  --color-primary-700: oklch(0.39 0.18 270);
+  --color-primary-800: oklch(0.32 0.14 270);
+  --color-primary-900: oklch(0.27 0.10 270);
+  --color-primary-950: oklch(0.18 0.06 270);
+
+  /* Secondary Colors - Emerald */
+  --color-secondary-50: oklch(0.97 0.02 160);
+  --color-secondary-100: oklch(0.93 0.05 160);
+  --color-secondary-200: oklch(0.87 0.10 160);
+  --color-secondary-300: oklch(0.78 0.15 160);
+  --color-secondary-400: oklch(0.66 0.18 160);
+  --color-secondary-500: oklch(0.55 0.18 160);
+  --color-secondary-600: oklch(0.46 0.16 160);
+  --color-secondary-700: oklch(0.38 0.13 160);
+  --color-secondary-800: oklch(0.31 0.10 160);
+  --color-secondary-900: oklch(0.26 0.08 160);
+  --color-secondary-950: oklch(0.16 0.05 160);
+
+  /* Radius */
+  --radius: 0.5rem;
+}
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,5 +55,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }
