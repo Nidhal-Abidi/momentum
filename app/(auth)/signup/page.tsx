@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/shadcn/button";
 import Link from "next/link";
+import { Input } from "@/components/shadcn/input";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -73,14 +74,13 @@ export default function SignupPage() {
               >
                 Name
               </label>
-              <input
+              <Input
                 id="name"
                 name="name"
                 type="text"
                 autoComplete="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="mt-1 block w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-stone-900 placeholder-stone-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-stone-700 dark:bg-stone-900 dark:text-white dark:placeholder-stone-500"
                 placeholder="Your name"
               />
             </div>
@@ -92,7 +92,7 @@ export default function SignupPage() {
               >
                 Email address
               </label>
-              <input
+              <Input
                 id="email"
                 name="email"
                 type="email"
@@ -100,7 +100,6 @@ export default function SignupPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-stone-900 placeholder-stone-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-stone-700 dark:bg-stone-900 dark:text-white dark:placeholder-stone-500"
                 placeholder="you@example.com"
               />
             </div>
@@ -112,7 +111,7 @@ export default function SignupPage() {
               >
                 Password
               </label>
-              <input
+              <Input
                 id="password"
                 name="password"
                 type="password"
@@ -120,7 +119,6 @@ export default function SignupPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 block w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-stone-900 placeholder-stone-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-stone-700 dark:bg-stone-900 dark:text-white dark:placeholder-stone-500"
                 placeholder="••••••••"
               />
             </div>
