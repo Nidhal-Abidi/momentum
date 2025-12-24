@@ -3,6 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { AppShell } from "@/components/shell";
+import type { User } from "@prisma/client";
 
 export default function ProtectedLayout({
   children,
@@ -57,10 +58,7 @@ export default function ProtectedLayout({
   return (
     <AppShell
       navigationItems={navigationItems}
-      user={{
-        name: session?.user?.name || "User",
-        avatarUrl: (session?.user as any)?.avatarUrl,
-      }}
+      user={session?.user as User}
       onNavigate={handleNavigate}
       onLogout={handleLogout}
       onSettings={handleSettings}
@@ -70,4 +68,3 @@ export default function ProtectedLayout({
     </AppShell>
   );
 }
-

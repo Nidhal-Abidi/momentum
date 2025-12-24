@@ -13,12 +13,10 @@ import {
 import { Avatar, AvatarFallback } from "@/components/shadcn/avatar";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { User } from "@prisma/client";
 
 interface UserMenuProps {
-  user?: {
-    name: string;
-    avatarUrl?: string;
-  };
+  user?: User;
   onSettings?: () => void;
   onHelp?: () => void;
   onLogout?: () => void;
@@ -88,7 +86,7 @@ export function UserMenu({
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-color-scheme: dark)").matches);
 
-  const userName = user?.name || "User";
+  const userName = user?.name ?? "User";
   const initials = getInitials(userName);
 
   return (
