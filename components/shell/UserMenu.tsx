@@ -20,6 +20,7 @@ interface UserMenuProps {
   onSettings?: () => void;
   onHelp?: () => void;
   onLogout?: () => void;
+  collapsed?: boolean;
 }
 
 type Theme = "light" | "dark" | "system";
@@ -38,6 +39,7 @@ export function UserMenu({
   onSettings,
   onHelp,
   onLogout,
+  collapsed = false,
 }: UserMenuProps) {
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window !== "undefined") {
@@ -94,14 +96,16 @@ export function UserMenu({
       <DropdownMenuTrigger asChild>
         <button
           className={cn(
-            "flex w-full items-center gap-x-3 rounded-lg px-3 py-3",
+            "flex w-full items-center rounded-lg py-3",
             "text-sm font-semibold leading-6",
             "text-stone-900 hover:bg-stone-100",
             "dark:text-white dark:hover:bg-stone-800",
-            "transition-colors focus:outline-none"
+            "transition-colors focus:outline-none",
+            collapsed ? "justify-center px-3" : "gap-x-3 px-3"
           )}
+          title={collapsed ? userName : undefined}
         >
-          <Avatar className="size-9">
+          <Avatar className="size-9 shrink-0">
             {user?.avatarUrl ? (
               <Image
                 src={user.avatarUrl}
@@ -114,7 +118,7 @@ export function UserMenu({
               </AvatarFallback>
             )}
           </Avatar>
-          <span className="truncate">{userName}</span>
+          {!collapsed && <span className="truncate">{userName}</span>}
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-56">

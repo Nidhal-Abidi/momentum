@@ -12,6 +12,7 @@ export interface NavItem {
 interface MainNavProps {
   items: NavItem[];
   onNavigate?: (href: string) => void;
+  collapsed?: boolean;
 }
 
 const icons: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -21,7 +22,11 @@ const icons: Record<string, React.ComponentType<{ className?: string }>> = {
   Dashboard: BarChart3,
 };
 
-export function MainNav({ items, onNavigate }: MainNavProps) {
+export function MainNav({
+  items,
+  onNavigate,
+  collapsed = false,
+}: MainNavProps) {
   return (
     <ul role="list" className="flex flex-1 flex-col gap-y-1">
       {items.map((item) => {
@@ -31,11 +36,13 @@ export function MainNav({ items, onNavigate }: MainNavProps) {
             <button
               onClick={() => onNavigate?.(item.href)}
               className={cn(
-                "group flex w-full items-center gap-x-3 rounded-lg px-3 py-2.5 text-sm font-semibold leading-6 transition-colors",
+                "group flex w-full items-center rounded-lg py-2.5 text-sm font-semibold leading-6 transition-colors",
+                collapsed ? "justify-center px-3" : "gap-x-3 px-3",
                 item.isActive
                   ? "bg-indigo-500 text-white"
                   : "text-stone-700 hover:bg-stone-100 dark:text-stone-300 dark:hover:bg-stone-800"
               )}
+              title={collapsed ? item.label : undefined}
             >
               {Icon && (
                 <Icon
@@ -47,7 +54,7 @@ export function MainNav({ items, onNavigate }: MainNavProps) {
                   )}
                 />
               )}
-              {item.label}
+              {!collapsed && item.label}
             </button>
           </li>
         );
@@ -55,4 +62,3 @@ export function MainNav({ items, onNavigate }: MainNavProps) {
     </ul>
   );
 }
-
