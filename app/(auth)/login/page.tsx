@@ -34,6 +34,7 @@ export default function LoginPage() {
       }
     } catch (error) {
       setError("An error occurred. Please try again.");
+      console.error(error);
     } finally {
       setIsLoading(false);
     }

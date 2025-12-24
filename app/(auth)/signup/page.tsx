@@ -37,6 +37,7 @@ export default function SignupPage() {
       router.push("/login?registered=true");
     } catch (error) {
       setError("An error occurred. Please try again.");
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
