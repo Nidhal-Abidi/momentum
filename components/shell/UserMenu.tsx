@@ -9,8 +9,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+} from "@/components/shadcn/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/shadcn/avatar";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 

@@ -41,3 +41,6 @@ yarn-error.log*
 next-env.d.ts
 /product-plan/*
 /lib/generated/prisma
+SETUP.md
+IMPLEMENTATION_SUMMARY.md
+__tests__/*

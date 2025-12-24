@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Button } from "@/components/shadcn/button";
+import { Sheet, SheetContent } from "@/components/shadcn/sheet";
 import { MainNav } from "./MainNav";
 import { UserMenu } from "./UserMenu";
 import type { NavItem } from "./MainNav";
@@ -127,4 +127,3 @@ export function AppShell({
     </div>
   );
 }
-
