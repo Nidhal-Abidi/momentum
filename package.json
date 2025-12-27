@@ -27,7 +27,6 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
-    "emoji-picker-react": "^4.16.1",
     "lucide-react": "^0.562.0",
     "next": "16.1.0",
     "next-auth": "5.0.0-beta.30",

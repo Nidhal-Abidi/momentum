@@ -1,45 +1,106 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { useState } from "react";
-import type { EmojiClickData } from "emoji-picker-react";
-
-const EmojiPickerComponent = dynamic(() => import("emoji-picker-react"), {
-  ssr: false,
-  loading: () => (
-    <div className="h-[350px] flex items-center justify-center text-stone-500">
-      Loading emoji picker...
-    </div>
-  ),
-});
-
 interface EmojiPickerProps {
   value: string;
   onChange: (emoji: string) => void;
 }
 
+const COMMON_EMOJIS = [
+  "💼",
+  "🎯",
+  "💪",
+  "🧠",
+  "❤️",
+  "🏃",
+  "📚",
+  "🎨",
+  "🎵",
+  "🍎",
+  "🏋️",
+  "🧘",
+  "💰",
+  "📱",
+  "🏠",
+  "🌱",
+  "✨",
+  "🔥",
+  "⚡",
+  "🌟",
+  "🎓",
+  "👔",
+  "🏆",
+  "📈",
+  "🚀",
+  "💡",
+  "🎬",
+  "📝",
+  "🎮",
+  "☕",
+  "🍕",
+  "🎪",
+  "🌈",
+  "🎁",
+  "🔧",
+  "⚙️",
+  "🎤",
+  "🎸",
+  "🎹",
+  "🎭",
+  "📷",
+  "🖼️",
+  "🗺️",
+  "✈️",
+  "🚗",
+  "🚴",
+  "🏖️",
+  "⛰️",
+  "🌊",
+  "🌸",
+  "🌺",
+  "🌻",
+  "🌼",
+  "🍀",
+  "🌿",
+  "🌳",
+  "🐶",
+  "🐱",
+  "🐼",
+  "🦁",
+  "🦊",
+  "🐻",
+  "🐨",
+  "🐯",
+];
+
 export function EmojiPicker({ value, onChange }: EmojiPickerProps) {
-  const [selectedEmoji, setSelectedEmoji] = useState(value);
-
-  const handleEmojiClick = (emojiData: EmojiClickData) => {
-    setSelectedEmoji(emojiData.emoji);
-    onChange(emojiData.emoji);
-  };
-
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-3">
         <span className="text-sm text-stone-600 dark:text-stone-400">
           Selected:
         </span>
-        <div className="text-4xl">{selectedEmoji}</div>
+        <div className="text-4xl">{value}</div>
       </div>
-      <EmojiPickerComponent
-        onEmojiClick={handleEmojiClick}
-        searchPlaceHolder="Search emoji..."
-        width="100%"
-        height={350}
-      />
+      <div className="grid grid-cols-8 gap-2 max-h-[300px] overflow-y-auto p-2">
+        {COMMON_EMOJIS.map((emoji) => (
+          <button
+            key={emoji}
+            type="button"
+            onClick={() => onChange(emoji)}
+            className={`
+              text-3xl p-2 rounded-lg transition-all hover:scale-110
+              ${
+                value === emoji
+                  ? "bg-indigo-100 dark:bg-indigo-900/30 ring-2 ring-indigo-500"
+                  : "hover:bg-stone-100 dark:hover:bg-stone-800"
+              }
+            `}
+            title={emoji}
+          >
+            {emoji}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
