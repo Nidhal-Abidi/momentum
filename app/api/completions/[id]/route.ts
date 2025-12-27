@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { updateStreakForDomain } from "@/lib/streakUtils";
 
 // DELETE /api/completions/[id] - Delete a completion
 export async function DELETE(
@@ -33,9 +34,15 @@ export async function DELETE(
       );
     }
 
+    // Store domainId before deletion for streak recalculation
+    const domainId = completion.domainId;
+
     await prisma.completion.delete({
       where: { id },
     });
+
+    // Update streak calculation after deleting completion
+    await updateStreakForDomain(domainId);
 
     return NextResponse.json({ message: "Completion deleted successfully" });
   } catch (error) {
@@ -46,4 +53,3 @@ export async function DELETE(
     );
   }
 }
-

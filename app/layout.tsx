@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans, IBM_Plex_Mono } from "next/font/google";
-import { SessionProvider } from "next-auth/react";
-import { DomainsProvider } from "@/lib/contexts";
+import { Providers } from "@/lib/providers";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -32,11 +31,7 @@ export default function RootLayout({
       <body
         className={`${dmSans.variable} ${ibmPlexMono.variable} font-sans antialiased`}
       >
-        <SessionProvider>
-          <DomainsProvider>
-            {children}
-          </DomainsProvider>
-        </SessionProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { updateStreakForDomain } from "@/lib/streakUtils";
+import { Prisma } from "@prisma/client";
 
 // GET /api/completions - Get completions (optionally filtered by domain or date range)
 export async function GET(req: Request) {
@@ -17,7 +19,7 @@ export async function GET(req: Request) {
     const endDate = searchParams.get("endDate");
 
     // Build query conditions
-    const where: any = {
+    const where: Prisma.CompletionWhereInput = {
       domain: {
         userId: session.user.id,
       },
@@ -115,6 +117,9 @@ export async function POST(req: Request) {
       },
     });
 
+    // Update streak calculation after creating completion
+    await updateStreakForDomain(domainId);
+
     const transformedCompletion = {
       id: completion.id,
       domainId: completion.domainId,
@@ -130,4 +135,3 @@ export async function POST(req: Request) {
     );
   }
 }
-
