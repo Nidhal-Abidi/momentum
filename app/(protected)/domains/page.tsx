@@ -14,40 +14,20 @@ export default function DomainsPage() {
   const updateDomain = useUpdateDomain();
   const deleteDomain = useDeleteDomain();
 
-  const handleCreate = async (data: DomainFormData) => {
-    try {
-      await createDomain.mutateAsync(data);
-    } catch (error) {
-      console.error("Failed to create domain:", error);
-      alert((error as Error).message || "Failed to create domain");
-    }
+  const handleCreate = (data: DomainFormData) => {
+    createDomain.mutate(data);
   };
 
-  const handleEdit = async (id: string, data: DomainFormData) => {
-    try {
-      await updateDomain.mutateAsync({ id, data });
-    } catch (error) {
-      console.error("Failed to update domain:", error);
-      alert((error as Error).message || "Failed to update domain");
-    }
+  const handleEdit = (id: string, data: DomainFormData) => {
+    updateDomain.mutate({ id, data });
   };
 
-  const handleDelete = async (id: string) => {
-    try {
-      await deleteDomain.mutateAsync(id);
-    } catch (error) {
-      console.error("Failed to delete domain:", error);
-      alert((error as Error).message || "Failed to delete domain");
-    }
+  const handleDelete = (id: string) => {
+    deleteDomain.mutate(id);
   };
 
-  const handleUseTemplate = async (template: DomainTemplate) => {
-    try {
-      await createDomain.mutateAsync(template);
-    } catch (error) {
-      console.error("Failed to create domain from template:", error);
-      alert((error as Error).message || "Failed to create domain");
-    }
+  const handleUseTemplate = (template: DomainTemplate) => {
+    createDomain.mutate(template);
   };
 
   if (isLoading) {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import { queryKeys } from "@/lib/queryClient";
 import { Domain, DomainFormData } from "@/lib/types";
 
@@ -57,11 +58,17 @@ export function useUpdateDomain() {
 
       return { previousDomains };
     },
+    onSuccess: (domain) => {
+      toast.success(`${domain.emoji} ${domain.name} updated successfully!`);
+    },
     onError: (err, variables, context) => {
       // Roll back to the previous value on error
       if (context?.previousDomains) {
         queryClient.setQueryData(queryKeys.domains, context.previousDomains);
       }
+      toast.error(
+        err instanceof Error ? err.message : "Failed to update domain"
+      );
     },
     onSettled: () => {
       // Always refetch after error or success

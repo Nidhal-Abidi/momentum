@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import { queryKeys } from "@/lib/queryClient";
 import { Domain } from "@/lib/types";
 
@@ -37,13 +38,23 @@ export function useDeleteDomain() {
         );
       }
 
-      return { previousDomains };
+      return {
+        previousDomains,
+        deletedDomainName: previousDomains?.find((d) => d.id === id)?.name,
+      };
+    },
+    onSuccess: (_, id, context) => {
+      const domainName = context?.deletedDomainName || "Domain";
+      toast.success(`${domainName} deleted successfully!`);
     },
     onError: (err, id, context) => {
       // Roll back to the previous value on error
       if (context?.previousDomains) {
         queryClient.setQueryData(queryKeys.domains, context.previousDomains);
       }
+      toast.error(
+        err instanceof Error ? err.message : "Failed to delete domain"
+      );
     },
     onSettled: () => {
       // Always refetch after error or success

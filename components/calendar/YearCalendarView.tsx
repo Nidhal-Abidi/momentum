@@ -59,7 +59,7 @@ export function YearCalendarView({
             >
               <div className="flex items-center gap-3">
                 <div className="flex size-9 items-center justify-center rounded-lg bg-stone-100 dark:bg-stone-800">
-                  <span className="text-xl">{domain.icon}</span>
+                  <span className="text-xl">{domain.emoji}</span>
                 </div>
                 <span className="font-bold">{domain.name}</span>
               </div>
@@ -74,7 +74,7 @@ export function YearCalendarView({
                 className="flex items-center gap-3 p-3"
               >
                 <div className="flex size-9 items-center justify-center rounded-lg bg-stone-100 dark:bg-stone-800">
-                  <span className="text-xl">{d.icon}</span>
+                  <span className="text-xl">{d.emoji}</span>
                 </div>
                 <span className="font-semibold">{d.name}</span>
               </DropdownMenuItem>

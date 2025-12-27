@@ -85,7 +85,7 @@ export function MonthCalendar({
       <div className="border-b border-stone-100 bg-linear-to-br from-stone-50 to-white px-6 py-4 dark:border-stone-800 dark:from-stone-900 dark:to-stone-950">
         <div className="flex items-center gap-3">
           <div className="flex size-10 items-center justify-center rounded-xl bg-white shadow-sm dark:bg-stone-900">
-            <span className="text-2xl">{domain.icon}</span>
+            <span className="text-2xl">{domain.emoji}</span>
           </div>
           <div className="flex-1">
             <h3 className="text-lg font-bold text-stone-900 dark:text-white">

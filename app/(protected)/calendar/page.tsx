@@ -151,18 +151,6 @@ export default function CalendarPage() {
           // The Calendar component handles it internally
         }}
       />
-
-      {/* Show mutation error if any */}
-      {toggleCompletion.isError && (
-        <div className="fixed bottom-4 right-4 rounded-lg bg-red-50 p-4 text-red-900 shadow-lg dark:bg-red-950 dark:text-red-100">
-          <p className="font-semibold">Failed to update completion</p>
-          <p className="text-sm">
-            {toggleCompletion.error instanceof Error
-              ? toggleCompletion.error.message
-              : "Please try again"}
-          </p>
-        </div>
-      )}
     </div>
   );
 }

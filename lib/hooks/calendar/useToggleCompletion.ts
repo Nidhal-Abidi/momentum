@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import { queryKeys } from "@/lib/queryClient";
 import { Completion } from "@/lib/types";
 
@@ -122,6 +123,13 @@ export function useToggleCompletion() {
       // Return context with snapshot for potential rollback
       return { previousCompletions };
     },
+    onSuccess: (result) => {
+      if (result.action === "created") {
+        toast.success("Day marked as complete! 🎉");
+      } else {
+        toast.success("Completion removed");
+      }
+    },
     // Rollback on error
     onError: (err, variables, context) => {
       if (context?.previousCompletions) {
@@ -130,6 +138,9 @@ export function useToggleCompletion() {
           context.previousCompletions
         );
       }
+      toast.error(
+        err instanceof Error ? err.message : "Failed to update completion"
+      );
     },
     // Refetch on success
     onSettled: () => {
