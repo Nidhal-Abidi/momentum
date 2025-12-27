@@ -15,18 +15,32 @@ export async function GET() {
       where: {
         userId: session.user.id,
       },
+      include: {
+        _count: {
+          select: {
+            completions: true,
+          },
+        },
+        streaks: {
+          select: {
+            currentStreak: true,
+          },
+        },
+      },
       orderBy: {
         createdAt: "asc",
       },
     });
 
-    // Transform to match frontend types (DateTime to ISO string)
+    // Transform to match frontend types (DateTime to ISO string, icon to emoji, add stats)
     const transformedDomains = domains.map((domain) => ({
       id: domain.id,
       name: domain.name,
       color: domain.color,
-      icon: domain.icon,
+      emoji: domain.icon, // Map icon field to emoji for frontend
       createdAt: domain.createdAt.toISOString(),
+      totalCompletions: domain._count.completions,
+      currentStreak: domain.streaks?.[0]?.currentStreak || 0,
     }));
 
     return NextResponse.json(transformedDomains);
@@ -65,22 +79,73 @@ export async function POST(req: Request) {
       );
     }
 
-    const domain = await prisma.domain.create({
-      data: {
+    // Check domain limit (max 10 domains per user)
+    const domainCount = await prisma.domain.count({
+      where: {
         userId: session.user.id,
-        name,
-        color,
-        icon,
       },
     });
 
-    // Transform to match frontend types
+    if (domainCount >= 10) {
+      return NextResponse.json(
+        {
+          error:
+            "Maximum 10 domains reached. Delete a domain to add a new one.",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Check for duplicate name (case-insensitive)
+    const existingDomain = await prisma.domain.findFirst({
+      where: {
+        userId: session.user.id,
+        name: {
+          equals: name,
+          mode: "insensitive",
+        },
+      },
+    });
+
+    if (existingDomain) {
+      return NextResponse.json(
+        { error: "A domain with this name already exists" },
+        { status: 400 }
+      );
+    }
+
+    // Create domain and streak record in a transaction
+    const result = await prisma.$transaction(async (tx) => {
+      const domain = await tx.domain.create({
+        data: {
+          userId: session.user.id,
+          name,
+          color,
+          icon,
+        },
+      });
+
+      // Auto-create streak record
+      await tx.streak.create({
+        data: {
+          domainId: domain.id,
+          currentStreak: 0,
+          longestStreak: 0,
+        },
+      });
+
+      return domain;
+    });
+
+    // Transform to match frontend types (icon to emoji)
     const transformedDomain = {
-      id: domain.id,
-      name: domain.name,
-      color: domain.color,
-      icon: domain.icon,
-      createdAt: domain.createdAt.toISOString(),
+      id: result.id,
+      name: result.name,
+      color: result.color,
+      emoji: result.icon,
+      createdAt: result.createdAt.toISOString(),
+      totalCompletions: 0,
+      currentStreak: 0,
     };
 
     return NextResponse.json(transformedDomain, { status: 201 });

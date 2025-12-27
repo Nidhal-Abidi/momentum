@@ -2,21 +2,18 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/queryClient";
-import { Domain } from "@/lib/types";
+import { Domain, DomainFormData } from "@/lib/types";
 
-type UpdateDomainInput = {
+interface UpdateDomainParams {
   id: string;
-  updates: Partial<Omit<Domain, "id" | "createdAt">>;
-};
+  data: DomainFormData;
+}
 
-async function updateDomain({
-  id,
-  updates,
-}: UpdateDomainInput): Promise<Domain> {
+async function updateDomain({ id, data }: UpdateDomainParams): Promise<Domain> {
   const response = await fetch(`/api/domains/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(updates),
+    body: JSON.stringify({ ...data, icon: data.emoji }),
   });
 
   if (!response.ok) {
@@ -32,8 +29,42 @@ export function useUpdateDomain() {
 
   return useMutation({
     mutationFn: updateDomain,
-    onSuccess: () => {
-      // Invalidate domains query to refetch the list
+    onMutate: async ({ id, data }) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: queryKeys.domains });
+
+      // Snapshot the previous value
+      const previousDomains = queryClient.getQueryData<Domain[]>(
+        queryKeys.domains
+      );
+
+      // Optimistically update to the new value
+      if (previousDomains) {
+        queryClient.setQueryData<Domain[]>(
+          queryKeys.domains,
+          previousDomains.map((domain) =>
+            domain.id === id
+              ? {
+                  ...domain,
+                  name: data.name,
+                  emoji: data.emoji,
+                  color: data.color,
+                }
+              : domain
+          )
+        );
+      }
+
+      return { previousDomains };
+    },
+    onError: (err, variables, context) => {
+      // Roll back to the previous value on error
+      if (context?.previousDomains) {
+        queryClient.setQueryData(queryKeys.domains, context.previousDomains);
+      }
+    },
+    onSettled: () => {
+      // Always refetch after error or success
       queryClient.invalidateQueries({ queryKey: queryKeys.domains });
     },
   });

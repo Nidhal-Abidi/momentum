@@ -18,8 +18,10 @@ export interface Domain {
   id: string;
   name: string;
   color: DomainColor;
-  icon: string;
+  emoji: string;
   createdAt: string;
+  totalCompletions: number;
+  currentStreak: number;
 }
 
 /**
@@ -62,4 +64,22 @@ export interface User {
   email: string;
   name?: string | null;
   avatarUrl?: string | null;
+}
+
+/**
+ * Template domains that users can choose from when getting started
+ */
+export interface DomainTemplate {
+  name: string;
+  emoji: string;
+  color: DomainColor;
+}
+
+/**
+ * Form data for creating or editing a domain
+ */
+export interface DomainFormData {
+  name: string;
+  emoji: string;
+  color: DomainColor;
 }

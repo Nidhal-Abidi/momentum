@@ -21,6 +21,18 @@ export async function GET(
         id,
         userId: session.user.id,
       },
+      include: {
+        _count: {
+          select: {
+            completions: true,
+          },
+        },
+        streaks: {
+          select: {
+            currentStreak: true,
+          },
+        },
+      },
     });
 
     if (!domain) {
@@ -31,8 +43,10 @@ export async function GET(
       id: domain.id,
       name: domain.name,
       color: domain.color,
-      icon: domain.icon,
+      emoji: domain.icon, // Map icon field to emoji for frontend
       createdAt: domain.createdAt.toISOString(),
+      totalCompletions: domain._count.completions,
+      currentStreak: domain.streaks?.[0]?.currentStreak || 0,
     };
 
     return NextResponse.json(transformedDomain);
@@ -80,6 +94,29 @@ export async function PATCH(
       return NextResponse.json({ error: "Domain not found" }, { status: 404 });
     }
 
+    // Check for duplicate name (case-insensitive), excluding current domain
+    if (name) {
+      const duplicateDomain = await prisma.domain.findFirst({
+        where: {
+          userId: session.user.id,
+          name: {
+            equals: name,
+            mode: "insensitive",
+          },
+          id: {
+            not: id,
+          },
+        },
+      });
+
+      if (duplicateDomain) {
+        return NextResponse.json(
+          { error: "A domain with this name already exists" },
+          { status: 400 }
+        );
+      }
+    }
+
     const domain = await prisma.domain.update({
       where: { id },
       data: {
@@ -87,14 +124,28 @@ export async function PATCH(
         ...(color && { color }),
         ...(icon && { icon }),
       },
+      include: {
+        _count: {
+          select: {
+            completions: true,
+          },
+        },
+        streaks: {
+          select: {
+            currentStreak: true,
+          },
+        },
+      },
     });
 
     const transformedDomain = {
       id: domain.id,
       name: domain.name,
       color: domain.color,
-      icon: domain.icon,
+      emoji: domain.icon, // Map icon field to emoji for frontend
       createdAt: domain.createdAt.toISOString(),
+      totalCompletions: domain._count.completions,
+      currentStreak: domain.streaks?.[0]?.currentStreak || 0,
     };
 
     return NextResponse.json(transformedDomain);
@@ -147,4 +198,3 @@ export async function DELETE(
     );
   }
 }
-
