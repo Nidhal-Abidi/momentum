@@ -87,41 +87,68 @@ export function useToggleCompletion() {
     mutationFn: toggleCompletion,
     // Optimistic update
     onMutate: async ({ domainId, date }) => {
-      // Cancel any outgoing refetches
-      await queryClient.cancelQueries({ queryKey: queryKeys.completions() });
+      // Cancel any outgoing refetches for all completion queries
+      await queryClient.cancelQueries({
+        queryKey: ["completions"],
+        exact: false,
+      });
 
-      // Snapshot the previous value
-      const previousCompletions = queryClient.getQueryData<Completion[]>(
-        queryKeys.completions()
-      );
+      // Get all completion queries and snapshot their values
+      const queryCache = queryClient.getQueryCache();
+      const completionQueries = queryCache.findAll({
+        queryKey: ["completions"],
+        exact: false,
+      });
 
-      // Optimistically update the cache
-      if (previousCompletions) {
-        const existingIndex = previousCompletions.findIndex(
-          (c) => c.domainId === domainId && c.date === date
-        );
+      const previousData = new Map();
 
-        if (existingIndex >= 0) {
-          // Remove it (delete action)
-          const newCompletions = [...previousCompletions];
-          newCompletions.splice(existingIndex, 1);
-          queryClient.setQueryData(queryKeys.completions(), newCompletions);
-        } else {
-          // Add it (create action)
-          const newCompletion: Completion = {
-            id: `temp-${Date.now()}`, // Temporary ID
-            domainId,
-            date,
-          };
-          queryClient.setQueryData(queryKeys.completions(), [
-            ...previousCompletions,
-            newCompletion,
-          ]);
+      // Snapshot all completion queries
+      completionQueries.forEach((query) => {
+        previousData.set(query.queryKey, query.state.data);
+      });
+
+      // Optimistically update all completion queries
+      completionQueries.forEach((query) => {
+        const completions = query.state.data as Completion[] | undefined;
+
+        if (completions && Array.isArray(completions)) {
+          const existingIndex = completions.findIndex(
+            (c) => c.domainId === domainId && c.date === date
+          );
+
+          if (existingIndex >= 0) {
+            // Remove it (delete action)
+            const newCompletions = [...completions];
+            newCompletions.splice(existingIndex, 1);
+            queryClient.setQueryData(query.queryKey, newCompletions);
+          } else {
+            // Add it (create action) - only if the date is within the query's date range
+            // Check if the date falls within the query's date range (if specified)
+            const queryKey = query.queryKey as [string, string?, string?];
+            const startDate = queryKey[1];
+            const endDate = queryKey[2];
+
+            // If no date range is specified, or if the date is within range, add it
+            const shouldAdd =
+              !startDate || !endDate || (date >= startDate && date <= endDate);
+
+            if (shouldAdd) {
+              const newCompletion: Completion = {
+                id: `temp-${Date.now()}`, // Temporary ID
+                domainId,
+                date,
+              };
+              queryClient.setQueryData(query.queryKey, [
+                ...completions,
+                newCompletion,
+              ]);
+            }
+          }
         }
-      }
+      });
 
       // Return context with snapshot for potential rollback
-      return { previousCompletions };
+      return { previousData };
     },
     onSuccess: (result) => {
       if (result.action === "created") {
@@ -132,11 +159,11 @@ export function useToggleCompletion() {
     },
     // Rollback on error
     onError: (err, variables, context) => {
-      if (context?.previousCompletions) {
-        queryClient.setQueryData(
-          queryKeys.completions(),
-          context.previousCompletions
-        );
+      if (context?.previousData) {
+        // Restore all previous query data
+        context.previousData.forEach((data, queryKey) => {
+          queryClient.setQueryData(queryKey, data);
+        });
       }
       toast.error(
         err instanceof Error ? err.message : "Failed to update completion"
@@ -144,8 +171,11 @@ export function useToggleCompletion() {
     },
     // Refetch on success
     onSettled: () => {
-      // Invalidate and refetch completions
-      queryClient.invalidateQueries({ queryKey: queryKeys.completions() });
+      // Invalidate and refetch all completion queries
+      queryClient.invalidateQueries({
+        queryKey: ["completions"],
+        exact: false,
+      });
       // Also invalidate streaks since they depend on completions
       queryClient.invalidateQueries({ queryKey: queryKeys.streaks });
     },
