@@ -11,10 +11,7 @@ import {
   useStreaks,
   useToggleCompletion,
 } from "@/lib/hooks/calendar";
-import {
-  getCalendarViewClient,
-  setCalendarViewClient,
-} from "@/lib/cookieUtils";
+import { setCalendarViewClient } from "@/lib/cookieUtils";
 import { startOfMonth, endOfMonth, format } from "date-fns";
 
 export default function CalendarPage() {
@@ -24,6 +21,11 @@ export default function CalendarPage() {
 
   // Date range for fetching completions (current month by default)
   const today = new Date();
+
+  // Manage current month/year state to keep it in sync with data fetching
+  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+  const [currentYear, setCurrentYear] = useState(today.getFullYear());
+
   const [dateRange, setDateRange] = useState({
     startDate: format(startOfMonth(today), "yyyy-MM-dd"),
     endDate: format(endOfMonth(today), "yyyy-MM-dd"),
@@ -77,6 +79,11 @@ export default function CalendarPage() {
 
   // Handle month change (Grid View)
   const handleMonthChange = (year: number, month: number) => {
+    // Update state first to ensure UI updates immediately
+    setCurrentMonth(month);
+    setCurrentYear(year);
+
+    // Then update date range for data fetching
     const newDate = new Date(year, month, 1);
     setDateRange({
       startDate: format(startOfMonth(newDate), "yyyy-MM-dd"),
@@ -86,6 +93,9 @@ export default function CalendarPage() {
 
   // Handle year change (Single View)
   const handleYearChange = (year: number) => {
+    // Update state first to ensure UI updates immediately
+    setCurrentYear(year);
+
     // For year view, fetch entire year
     setDateRange({
       startDate: `${year}-01-01`,
@@ -142,6 +152,8 @@ export default function CalendarPage() {
         goals={goals}
         streaks={streaks}
         view={view}
+        currentMonth={currentMonth}
+        currentYear={currentYear}
         onToggleCompletion={handleToggleCompletion}
         onViewChange={handleViewChange}
         onMonthChange={handleMonthChange}

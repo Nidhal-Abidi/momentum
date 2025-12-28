@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import type { Domain, Completion, Goal, Streak } from "@/lib/types";
 import { MonthCalendarGrid } from "./MonthCalendarGrid";
 import { YearCalendarView } from "./YearCalendarView";
@@ -17,6 +17,8 @@ export interface CalendarProps {
   goals: Goal[];
   streaks: Streak[];
   view?: CalendarView;
+  currentMonth?: number;
+  currentYear?: number;
   onToggleCompletion?: (domainId: string, date: string) => void;
   onViewChange?: (view: CalendarView) => void;
   onDomainSelect?: (domainId: string) => void;
@@ -37,19 +39,47 @@ export function Calendar({
   goals,
   streaks,
   view = "grid",
+  currentMonth: controlledMonth,
+  currentYear: controlledYear,
   onToggleCompletion,
   onViewChange,
   onDomainSelect,
   onMonthChange,
   onYearChange,
 }: CalendarProps) {
-  // Local state for current navigation
+  // Use controlled props if provided, otherwise fall back to local state
   const today = new Date();
-  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
-  const [currentYear, setCurrentYear] = useState(today.getFullYear());
-  const [selectedDomainId, setSelectedDomainId] = useState(
+  const [internalMonth, setInternalMonth] = useState(today.getMonth());
+  const [internalYear, setInternalYear] = useState(today.getFullYear());
+
+  // Use controlled values if provided, otherwise use internal state
+  const currentMonth =
+    controlledMonth !== undefined ? controlledMonth : internalMonth;
+  const currentYear =
+    controlledYear !== undefined ? controlledYear : internalYear;
+
+  // Manage selectedDomainId - reset to first domain if current selection becomes invalid
+  const [selectedDomainId, setSelectedDomainId] = useState(() =>
     domains.length > 0 ? domains[0].id : ""
   );
+
+  // Compute the actual selectedDomainId to use (ensures it's always valid)
+  const validSelectedDomainId = useMemo(() => {
+    if (domains.length === 0) return "";
+    const currentExists = domains.some((d) => d.id === selectedDomainId);
+    return currentExists ? selectedDomainId : domains[0].id;
+  }, [domains, selectedDomainId]);
+
+  // Update state when selection becomes invalid
+  // This is necessary to sync state when domains list changes (e.g., domain deleted)
+  // We need to update state here because the selectedDomainId becomes invalid when domains change
+  // This is a valid use case for setState in useEffect as we're syncing with external data
+  useEffect(() => {
+    if (validSelectedDomainId !== selectedDomainId && validSelectedDomainId) {
+      setSelectedDomainId(validSelectedDomainId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [validSelectedDomainId]); // Only depend on validSelectedDomainId to avoid loops
 
   // Empty state
   if (domains.length === 0) {
@@ -61,6 +91,7 @@ export function Calendar({
     let newMonth = currentMonth + delta;
     let newYear = currentYear;
 
+    // Handle year boundaries
     if (newMonth < 0) {
       newMonth = 11;
       newYear -= 1;
@@ -69,16 +100,27 @@ export function Calendar({
       newYear += 1;
     }
 
-    setCurrentMonth(newMonth);
-    setCurrentYear(newYear);
-    onMonthChange?.(newYear, newMonth);
+    // If controlled, notify parent; otherwise update internal state
+    if (controlledMonth !== undefined || controlledYear !== undefined) {
+      onMonthChange?.(newYear, newMonth);
+    } else {
+      setInternalMonth(newMonth);
+      setInternalYear(newYear);
+      onMonthChange?.(newYear, newMonth);
+    }
   };
 
   // Handle year navigation (Single View)
   const handleYearChange = (delta: number) => {
     const newYear = currentYear + delta;
-    setCurrentYear(newYear);
-    onYearChange?.(newYear);
+
+    // If controlled, notify parent; otherwise update internal state
+    if (controlledYear !== undefined) {
+      onYearChange?.(newYear);
+    } else {
+      setInternalYear(newYear);
+      onYearChange?.(newYear);
+    }
   };
 
   // Handle domain selection (Single View)
@@ -93,7 +135,7 @@ export function Calendar({
   };
 
   // Get selected domain for Single View
-  const selectedDomain = domains.find((d) => d.id === selectedDomainId);
+  const selectedDomain = domains.find((d) => d.id === validSelectedDomainId);
 
   return (
     <div className="w-full">
