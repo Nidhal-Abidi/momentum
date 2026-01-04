@@ -83,3 +83,6 @@ export interface DomainFormData {
   emoji: string;
   color: DomainColor;
 }
+
+// Dashboard types
+export * from "./types/dashboard";
