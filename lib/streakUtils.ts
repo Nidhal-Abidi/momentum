@@ -195,3 +195,132 @@ export async function getCurrentWeekProgress(domainId: string): Promise<{
     totalDays,
   };
 }
+
+/**
+ * Check if a goal was achieved for a specific week
+ * @param completions - Array of completion date strings (YYYY-MM-DD)
+ * @param target - The weekly goal target
+ * @param weekStart - Start of the week
+ * @param weekEnd - End of the week
+ * @returns True if goal was met or exceeded
+ */
+export function isGoalAchieved(
+  completions: string[],
+  target: number,
+  weekStart: Date,
+  weekEnd: Date
+): boolean {
+  const count = countCompletionsInWeek(completions, weekStart, weekEnd);
+  return count >= target;
+}
+
+/**
+ * Get weekly history for a domain showing last N weeks
+ * @param completions - Array of completion date strings (YYYY-MM-DD)
+ * @param target - The weekly goal target
+ * @param weeksCount - Number of weeks to retrieve (default 4)
+ * @returns Array of weekly history items
+ */
+export function getWeeklyHistory(
+  completions: string[],
+  target: number,
+  weeksCount: number = 4
+): Array<{
+  weekStart: string;
+  weekEnd: string;
+  achieved: boolean;
+  daysCompleted: number;
+  target: number;
+}> {
+  const history: Array<{
+    weekStart: string;
+    weekEnd: string;
+    achieved: boolean;
+    daysCompleted: number;
+    target: number;
+  }> = [];
+
+  const currentDate = new Date();
+
+  // Start from last week (not current week)
+  for (let i = 1; i <= weeksCount; i++) {
+    const checkDate = subWeeks(currentDate, i);
+    const { weekStart, weekEnd } = getWeekBoundaries(checkDate);
+
+    const daysCompleted = countCompletionsInWeek(
+      completions,
+      weekStart,
+      weekEnd
+    );
+    const achieved = daysCompleted >= target;
+
+    history.push({
+      weekStart: weekStart.toISOString().split("T")[0],
+      weekEnd: weekEnd.toISOString().split("T")[0],
+      achieved,
+      daysCompleted,
+      target,
+    });
+  }
+
+  return history;
+}
+
+/**
+ * Get this month's statistics
+ * @param completions - Array of completion date strings (YYYY-MM-DD)
+ * @returns Object with daysCompleted, totalDays, and percentage
+ */
+export function getThisMonthStats(completions: string[]): {
+  daysCompleted: number;
+  totalDays: number;
+  percentage: number;
+} {
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+  // Count completions in current month
+  const daysCompleted = completions.filter((dateStr) => {
+    const date = parseISO(dateStr);
+    return isWithinInterval(date, { start: monthStart, end: monthEnd });
+  }).length;
+
+  // Total days from start of month to today (or end of month if today is past month)
+  const today = now > monthEnd ? monthEnd : now;
+  const totalDays = Math.floor(
+    (today.getTime() - monthStart.getTime()) / (1000 * 60 * 60 * 24)
+  ) + 1;
+
+  const percentage = totalDays > 0 ? Math.round((daysCompleted / totalDays) * 100) : 0;
+
+  return {
+    daysCompleted,
+    totalDays,
+    percentage,
+  };
+}
+
+/**
+ * Get current week progress with completion details
+ * Client-side version that works with arrays
+ * @param completions - Array of completion date strings (YYYY-MM-DD)
+ * @param target - The weekly goal target
+ * @returns Object with daysCompleted and percentComplete
+ */
+export function getCurrentWeekProgressFromArray(
+  completions: string[],
+  target: number
+): {
+  daysCompleted: number;
+  percentComplete: number;
+} {
+  const { weekStart, weekEnd } = getWeekBoundaries(new Date());
+  const daysCompleted = countCompletionsInWeek(completions, weekStart, weekEnd);
+  const percentComplete = target > 0 ? Math.round((daysCompleted / target) * 100) : 0;
+
+  return {
+    daysCompleted,
+    percentComplete,
+  };
+}

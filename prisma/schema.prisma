@@ -110,12 +110,13 @@ model Completion {
 
 // Goal model - weekly targets for domains (e.g., "5 out of 7 days")
 model Goal {
-  id         String   @id @default(cuid())
-  domainId   String   @unique
-  targetDays Int
-  totalDays  Int      @default(7)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id             String   @id @default(cuid())
+  domainId       String   @unique
+  targetDays     Int
+  totalDays      Int      @default(7)
+  motivationNote String?  @db.Text
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   // Relations
   domain Domain @relation(fields: [domainId], references: [id], onDelete: Cascade)

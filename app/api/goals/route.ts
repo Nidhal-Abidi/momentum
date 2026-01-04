@@ -17,9 +17,6 @@ export async function GET() {
           userId: session.user.id,
         },
       },
-      include: {
-        domain: true,
-      },
     });
 
     // Transform to match frontend types
@@ -28,6 +25,7 @@ export async function GET() {
       domainId: goal.domainId,
       targetDays: goal.targetDays,
       totalDays: goal.totalDays,
+      motivationNote: goal.motivationNote || "",
     }));
 
     return NextResponse.json(transformedGoals);
@@ -49,7 +47,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { domainId, targetDays, totalDays = 7 } = await req.json();
+    const { domainId, targetDays, totalDays = 7, motivationNote = "" } = await req.json();
 
     if (!domainId || targetDays === undefined) {
       return NextResponse.json(
@@ -86,11 +84,13 @@ export async function POST(req: Request) {
       update: {
         targetDays,
         totalDays,
+        motivationNote,
       },
       create: {
         domainId,
         targetDays,
         totalDays,
+        motivationNote,
       },
     });
 
@@ -99,6 +99,7 @@ export async function POST(req: Request) {
       domainId: goal.domainId,
       targetDays: goal.targetDays,
       totalDays: goal.totalDays,
+      motivationNote: goal.motivationNote || "",
     };
 
     return NextResponse.json(transformedGoal, { status: 201 });

@@ -95,9 +95,22 @@ export async function DELETE(
       return NextResponse.json({ error: "Goal not found" }, { status: 404 });
     }
 
+    // Delete the goal
     await prisma.goal.delete({
       where: { id },
     });
+
+    // Reset current streak to 0 but keep longest streak
+    const existingStreak = await prisma.streak.findUnique({
+      where: { domainId: existingGoal.domainId },
+    });
+
+    if (existingStreak) {
+      await prisma.streak.update({
+        where: { domainId: existingGoal.domainId },
+        data: { currentStreak: 0 },
+      });
+    }
 
     return NextResponse.json({ message: "Goal deleted successfully" });
   } catch (error) {
