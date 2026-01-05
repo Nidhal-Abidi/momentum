@@ -14,7 +14,7 @@ interface MonthCalendarProps {
   onToggleCompletion?: (domainId: string, date: string) => void;
 }
 
-const WEEKDAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const WEEKDAY_NAMES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 export function MonthCalendar({
   domain,
@@ -27,7 +27,9 @@ export function MonthCalendar({
 }: MonthCalendarProps) {
   // Get days in month
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const firstDayOfMonth = new Date(year, month, 1).getDay();
+  // Convert from Sunday-based (0-6) to Monday-based (0-6)
+  // Sunday = 0 -> 6, Monday = 1 -> 0, Tuesday = 2 -> 1, etc.
+  const firstDayOfMonth = (new Date(year, month, 1).getDay() + 6) % 7;
 
   // Create array of days with padding
   const days: (number | null)[] = [];
