@@ -38,6 +38,107 @@ function countCompletionsInWeek(
 }
 
 /**
+ * Calculate the active streak from today going backward
+ * @param completionDates - Array of completion date strings
+ * @param targetDays - Weekly goal target
+ * @param earliestCompletion - The earliest completion date
+ * @returns Number of consecutive weeks with goal met (from now backward)
+ */
+function calculateCurrentStreak(
+  completionDates: string[],
+  targetDays: number,
+  earliestCompletion: Date
+): number {
+  const currentDate = new Date();
+  let streak = 0;
+  let checkDate = currentDate;
+
+  // Check if current week has met the goal
+  const { weekStart: currentWeekStart, weekEnd: currentWeekEnd } =
+    getWeekBoundaries(currentDate);
+  const currentWeekCompletions = countCompletionsInWeek(
+    completionDates,
+    currentWeekStart,
+    currentWeekEnd
+  );
+
+  // If current week hasn't met goal yet, start from last week
+  if (currentWeekCompletions < targetDays) {
+    checkDate = subWeeks(currentDate, 1);
+  }
+
+  // Count consecutive weeks going backward
+  while (checkDate >= earliestCompletion) {
+    const { weekStart, weekEnd } = getWeekBoundaries(checkDate);
+    const weekCompletions = countCompletionsInWeek(
+      completionDates,
+      weekStart,
+      weekEnd
+    );
+
+    if (weekCompletions >= targetDays) {
+      streak++;
+      checkDate = subWeeks(checkDate, 1);
+    } else {
+      break;
+    }
+
+    // Safety check: max 520 weeks (~10 years)
+    if (streak >= 520) break;
+  }
+
+  return streak;
+}
+
+/**
+ * Scan through entire completion history to find the longest streak ever
+ * @param completionDates - Array of completion date strings
+ * @param targetDays - Weekly goal target
+ * @param earliestCompletion - The earliest completion date
+ * @param currentStreak - The current active streak (minimum return value)
+ * @returns The longest consecutive weeks with goal met
+ */
+function findLongestStreakInHistory(
+  completionDates: string[],
+  targetDays: number,
+  earliestCompletion: Date,
+  currentStreak: number
+): number {
+  let longestStreak = currentStreak;
+  let tempStreak = 0;
+  let scanDate = earliestCompletion;
+  const endDate = new Date();
+
+  while (scanDate <= endDate) {
+    const { weekStart, weekEnd } = getWeekBoundaries(scanDate);
+    const weekCompletions = countCompletionsInWeek(
+      completionDates,
+      weekStart,
+      weekEnd
+    );
+
+    if (weekCompletions >= targetDays) {
+      tempStreak++;
+      longestStreak = Math.max(longestStreak, tempStreak);
+    } else {
+      tempStreak = 0;
+    }
+
+    // Move to next week
+    scanDate = subWeeks(scanDate, -1); // Add 1 week
+
+    // Safety check: max 520 weeks (~10 years)
+    const weeksDiff = Math.floor(
+      (scanDate.getTime() - earliestCompletion.getTime()) /
+        (7 * 24 * 60 * 60 * 1000)
+    );
+    if (weeksDiff > 520) break;
+  }
+
+  return longestStreak;
+}
+
+/**
  * Calculate the current streak for a domain based on weekly goal completion
  * A streak continues as long as the user meets or exceeds their weekly goal
  * Starting from the most recent completed week, counting backward
@@ -62,69 +163,31 @@ export async function calculateStreak(domainId: string): Promise<{
   // Get all completions for this domain
   const completions = await prisma.completion.findMany({
     where: { domainId },
-    orderBy: { date: "desc" },
+    orderBy: { date: "asc" },
   });
 
-  // Convert to date strings for easier processing
+  if (completions.length === 0) {
+    return { currentStreak: 0, longestStreak: 0 };
+  }
+
+  // Convert to date strings and get earliest date
   const completionDates = completions.map((c) => format(c.date, "yyyy-MM-dd"));
+  const earliestCompletion = parseISO(completionDates[0]);
 
-  // Get the existing longest streak from database
-  const existingStreak = await prisma.streak.findUnique({
-    where: { domainId },
-  });
-  const previousLongestStreak = existingStreak?.longestStreak || 0;
-
-  // Calculate current streak
-  let currentStreak = 0;
-  const currentDate = new Date();
-
-  // Start from the most recent week and count backward
-  // We check if the current week (the week containing today) has met the goal
-  // If it has, we count it. If not, we start checking from last week
-  let checkDate = currentDate;
-
-  // First, check if we should include the current week
-  // The current week counts towards streak only if we're past the goal already
-  const { weekStart: currentWeekStart, weekEnd: currentWeekEnd } =
-    getWeekBoundaries(currentDate);
-  const currentWeekCompletions = countCompletionsInWeek(
+  // Calculate current active streak
+  const currentStreak = calculateCurrentStreak(
     completionDates,
-    currentWeekStart,
-    currentWeekEnd
+    goal.targetDays,
+    earliestCompletion
   );
 
-  // If current week hasn't met the goal yet, start checking from last week
-  if (currentWeekCompletions < goal.targetDays) {
-    checkDate = subWeeks(currentDate, 1);
-  }
-
-  // Count consecutive weeks where goal was met, going backward
-  while (true) {
-    const { weekStart, weekEnd } = getWeekBoundaries(checkDate);
-    const weekCompletions = countCompletionsInWeek(
-      completionDates,
-      weekStart,
-      weekEnd
-    );
-
-    // If this week met the goal, increment streak
-    if (weekCompletions >= goal.targetDays) {
-      currentStreak++;
-      // Move to previous week
-      checkDate = subWeeks(checkDate, 1);
-    } else {
-      // Streak broken
-      break;
-    }
-
-    // Safety check: don't go back more than 520 weeks (~10 years)
-    if (currentStreak >= 520) {
-      break;
-    }
-  }
-
-  // Calculate longest streak: max of current streak and previous longest
-  const longestStreak = Math.max(currentStreak, previousLongestStreak);
+  // Find longest streak in entire history
+  const longestStreak = findLongestStreakInHistory(
+    completionDates,
+    goal.targetDays,
+    earliestCompletion,
+    currentStreak
+  );
 
   return { currentStreak, longestStreak };
 }
