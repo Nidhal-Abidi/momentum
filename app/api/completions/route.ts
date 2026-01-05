@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { updateStreakForDomain } from "@/lib/streakUtils";
 import { Prisma } from "@prisma/client";
+import { format } from "date-fns";
 
 // GET /api/completions - Get completions (optionally filtered by domain or date range)
 export async function GET(req: Request) {
@@ -50,7 +51,7 @@ export async function GET(req: Request) {
     const transformedCompletions = completions.map((completion) => ({
       id: completion.id,
       domainId: completion.domainId,
-      date: completion.date.toISOString().split("T")[0], // YYYY-MM-DD format
+      date: format(completion.date, "yyyy-MM-dd"), // YYYY-MM-DD format
     }));
 
     return NextResponse.json(transformedCompletions);
@@ -123,7 +124,7 @@ export async function POST(req: Request) {
     const transformedCompletion = {
       id: completion.id,
       domainId: completion.domainId,
-      date: completion.date.toISOString().split("T")[0],
+      date: format(completion.date, "yyyy-MM-dd"),
     };
 
     return NextResponse.json(transformedCompletion, { status: 201 });

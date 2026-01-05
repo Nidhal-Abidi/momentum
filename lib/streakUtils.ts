@@ -4,6 +4,7 @@ import {
   subWeeks,
   isWithinInterval,
   parseISO,
+  format,
 } from "date-fns";
 import { prisma } from "./prisma";
 
@@ -65,9 +66,7 @@ export async function calculateStreak(domainId: string): Promise<{
   });
 
   // Convert to date strings for easier processing
-  const completionDates = completions.map(
-    (c) => c.date.toISOString().split("T")[0]
-  );
+  const completionDates = completions.map((c) => format(c.date, "yyyy-MM-dd"));
 
   // Get the existing longest streak from database
   const existingStreak = await prisma.streak.findUnique({
@@ -255,8 +254,8 @@ export function getWeeklyHistory(
     const achieved = daysCompleted >= target;
 
     history.push({
-      weekStart: weekStart.toISOString().split("T")[0],
-      weekEnd: weekEnd.toISOString().split("T")[0],
+      weekStart: format(weekStart, "yyyy-MM-dd"),
+      weekEnd: format(weekEnd, "yyyy-MM-dd"),
       achieved,
       daysCompleted,
       target,
@@ -288,11 +287,13 @@ export function getThisMonthStats(completions: string[]): {
 
   // Total days from start of month to today (or end of month if today is past month)
   const today = now > monthEnd ? monthEnd : now;
-  const totalDays = Math.floor(
-    (today.getTime() - monthStart.getTime()) / (1000 * 60 * 60 * 24)
-  ) + 1;
+  const totalDays =
+    Math.floor(
+      (today.getTime() - monthStart.getTime()) / (1000 * 60 * 60 * 24)
+    ) + 1;
 
-  const percentage = totalDays > 0 ? Math.round((daysCompleted / totalDays) * 100) : 0;
+  const percentage =
+    totalDays > 0 ? Math.round((daysCompleted / totalDays) * 100) : 0;
 
   return {
     daysCompleted,
@@ -317,7 +318,8 @@ export function getCurrentWeekProgressFromArray(
 } {
   const { weekStart, weekEnd } = getWeekBoundaries(new Date());
   const daysCompleted = countCompletionsInWeek(completions, weekStart, weekEnd);
-  const percentComplete = target > 0 ? Math.round((daysCompleted / target) * 100) : 0;
+  const percentComplete =
+    target > 0 ? Math.round((daysCompleted / target) * 100) : 0;
 
   return {
     daysCompleted,

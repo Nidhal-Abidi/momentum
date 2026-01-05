@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { queryKeys } from "@/lib/queryClient";
 import { Domain, DomainFormData } from "@/lib/types";
+import { format } from "date-fns";
 
 async function createDomain(data: DomainFormData): Promise<Domain> {
   const response = await fetch("/api/domains", {
@@ -41,7 +42,7 @@ export function useCreateDomain() {
           name: newDomain.name,
           emoji: newDomain.emoji,
           color: newDomain.color,
-          createdAt: new Date().toISOString(),
+          createdAt: format(new Date(), "yyyy-MM-dd"),
           totalCompletions: 0,
           currentStreak: 0,
         };

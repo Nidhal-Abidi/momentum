@@ -23,7 +23,8 @@ export default function GoalsAndStreaksPage() {
             Error Loading Goals
           </h2>
           <p className="text-stone-600 dark:text-stone-400">
-            Failed to load your goals and streaks. Please try refreshing the page.
+            Failed to load your goals and streaks. Please try refreshing the
+            page.
           </p>
         </div>
       </div>

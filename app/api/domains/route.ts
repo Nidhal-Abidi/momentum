@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { format } from "date-fns";
 
 // GET /api/domains - Get all domains for the authenticated user
 export async function GET() {
@@ -38,7 +39,7 @@ export async function GET() {
       name: domain.name,
       color: domain.color,
       emoji: domain.icon, // Map icon field to emoji for frontend
-      createdAt: domain.createdAt.toISOString(),
+      createdAt: format(domain.createdAt, "yyyy-MM-dd"),
       totalCompletions: domain._count.completions,
       currentStreak: domain.streaks?.[0]?.currentStreak || 0,
     }));
@@ -143,7 +144,7 @@ export async function POST(req: Request) {
       name: result.name,
       color: result.color,
       emoji: result.icon,
-      createdAt: result.createdAt.toISOString(),
+      createdAt: format(result.createdAt, "yyyy-MM-dd"),
       totalCompletions: 0,
       currentStreak: 0,
     };

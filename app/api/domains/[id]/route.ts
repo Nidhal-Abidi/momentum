@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { format } from "date-fns";
 
 // GET /api/domains/[id] - Get a single domain
 export async function GET(
@@ -44,7 +45,7 @@ export async function GET(
       name: domain.name,
       color: domain.color,
       emoji: domain.icon, // Map icon field to emoji for frontend
-      createdAt: domain.createdAt.toISOString(),
+      createdAt: format(domain.createdAt, "yyyy-MM-dd"),
       totalCompletions: domain._count.completions,
       currentStreak: domain.streaks?.[0]?.currentStreak || 0,
     };
@@ -143,7 +144,7 @@ export async function PATCH(
       name: domain.name,
       color: domain.color,
       emoji: domain.icon, // Map icon field to emoji for frontend
-      createdAt: domain.createdAt.toISOString(),
+      createdAt: format(domain.createdAt, "yyyy-MM-dd"),
       totalCompletions: domain._count.completions,
       currentStreak: domain.streaks?.[0]?.currentStreak || 0,
     };

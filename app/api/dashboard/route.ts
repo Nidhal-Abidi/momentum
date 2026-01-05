@@ -8,6 +8,7 @@ import type {
   WeeklyData,
   MonthlyCompletion,
 } from "@/lib/types/dashboard";
+import { format } from "date-fns";
 
 // Helper function to get days in a month
 function getDaysInMonth(month: number, year: number): number {
@@ -54,7 +55,9 @@ export async function GET(req: Request) {
     const yearParam = searchParams.get("year");
 
     // Default to current month/year if not provided
-    const targetMonth = monthParam ? parseInt(monthParam) : today.getMonth() + 1;
+    const targetMonth = monthParam
+      ? parseInt(monthParam)
+      : today.getMonth() + 1;
     const targetYear = yearParam ? parseInt(yearParam) : today.getFullYear();
 
     // Validate month and year
@@ -101,7 +104,7 @@ export async function GET(req: Request) {
         allTime: {
           totalDaysTracked: 0,
           overallCompletionRate: 0,
-          accountStartDate: user.createdAt.toISOString().split("T")[0],
+          accountStartDate: format(user.createdAt, "yyyy-MM-dd"),
           accountAgeDays: Math.floor(
             (today.getTime() - user.createdAt.getTime()) / (1000 * 60 * 60 * 24)
           ),
@@ -130,7 +133,8 @@ export async function GET(req: Request) {
 
     // Calculate overall completion rate
     // Total possible completions = number of domains * days since account creation
-    const totalPossibleCompletions = domains.length * Math.max(accountAgeDays, 1);
+    const totalPossibleCompletions =
+      domains.length * Math.max(accountAgeDays, 1);
     const overallCompletionRate = Math.round(
       (totalCompletions / totalPossibleCompletions) * 100
     );
@@ -138,7 +142,7 @@ export async function GET(req: Request) {
     const allTime: AllTimeStats = {
       totalDaysTracked: totalCompletions,
       overallCompletionRate: overallCompletionRate,
-      accountStartDate: user.createdAt.toISOString().split("T")[0],
+      accountStartDate: format(user.createdAt, "yyyy-MM-dd"),
       accountAgeDays: accountAgeDays,
     };
 
@@ -177,7 +181,14 @@ export async function GET(req: Request) {
     for (const domain of domains) {
       // This month range
       const thisMonthStart = new Date(targetYear, targetMonth - 1, 1);
-      const thisMonthEnd = new Date(targetYear, targetMonth - 1, currentDay, 23, 59, 59);
+      const thisMonthEnd = new Date(
+        targetYear,
+        targetMonth - 1,
+        currentDay,
+        23,
+        59,
+        59
+      );
 
       // Adjust for domains created mid-month
       const domainCreatedAt = new Date(domain.createdAt);
@@ -199,8 +210,10 @@ export async function GET(req: Request) {
       let thisMonthTotalDays = currentDay;
       if (domainCreatedAt > thisMonthStart) {
         const domainStartDay = domainCreatedAt.getDate();
-        if (domainCreatedAt.getMonth() + 1 === targetMonth && 
-            domainCreatedAt.getFullYear() === targetYear) {
+        if (
+          domainCreatedAt.getMonth() + 1 === targetMonth &&
+          domainCreatedAt.getFullYear() === targetYear
+        ) {
           thisMonthTotalDays = currentDay - domainStartDay + 1;
         }
       }
@@ -254,8 +267,7 @@ export async function GET(req: Request) {
 
       // Calculate trend
       const trend = thisMonthRate - lastMonthRate;
-      const trendDirection =
-        trend > 0 ? "up" : trend < 0 ? "down" : "neutral";
+      const trendDirection = trend > 0 ? "up" : trend < 0 ? "down" : "neutral";
 
       const thisMonth: MonthlyCompletion = {
         completed: thisMonthCompletions,
@@ -361,4 +373,3 @@ export async function GET(req: Request) {
     );
   }
 }
-

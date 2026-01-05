@@ -9,6 +9,7 @@ import {
   getThisMonthStats,
   getCurrentWeekProgressFromArray,
 } from "@/lib/streakUtils";
+import { format } from "date-fns";
 
 interface Goal {
   id: string;
@@ -105,14 +106,14 @@ async function fetchDomainGoals(): Promise<DomainGoal[]> {
 
     // Calculate current week data
     const { weekStart, weekEnd } = getWeekBoundaries(new Date());
-    const weekStartStr = weekStart.toISOString().split("T")[0];
-    const weekEndStr = weekEnd.toISOString().split("T")[0];
+    const weekStartStr = format(weekStart, "yyyy-MM-dd");
+    const weekEndStr = format(weekEnd, "yyyy-MM-dd");
 
     // Generate all 7 days of the week with completion status
     const currentWeekCompletions = [];
     const currentDate = new Date(weekStart);
     while (currentDate <= weekEnd) {
-      const dateStr = currentDate.toISOString().split("T")[0];
+      const dateStr = format(currentDate, "yyyy-MM-dd");
       currentWeekCompletions.push({
         date: dateStr,
         completed: completionDates.includes(dateStr),
@@ -122,9 +123,10 @@ async function fetchDomainGoals(): Promise<DomainGoal[]> {
 
     // Calculate progress
     const target = goal?.targetDays || 0;
-    const progress = target > 0
-      ? getCurrentWeekProgressFromArray(completionDates, target)
-      : { daysCompleted: 0, percentComplete: 0 };
+    const progress =
+      target > 0
+        ? getCurrentWeekProgressFromArray(completionDates, target)
+        : { daysCompleted: 0, percentComplete: 0 };
 
     // Calculate weekly history
     const history = goal
@@ -183,4 +185,3 @@ export function useDomainGoals() {
     staleTime: 30 * 1000, // 30 seconds
   });
 }
-
