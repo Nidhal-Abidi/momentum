@@ -5,7 +5,7 @@
 export interface AllTimeStats {
   /** Total number of completions across all domains since account creation */
   totalDaysTracked: number;
-  /** Overall completion rate as a percentage (0-100) */
+  /** Average daily completions * 100 (e.g., 150 = 1.5 completions per day on average) */
   overallCompletionRate: number;
   /** ISO date string when the account was created */
   accountStartDate: string;
@@ -81,4 +81,3 @@ export interface DashboardProps {
   /** Called when user clicks on a specific domain card */
   onDomainClick?: (domainId: string) => void;
 }
-

@@ -10,6 +10,7 @@ export default function AnalyticsPage() {
     useMonthNavigation();
 
   const { data, isLoading, error } = useDashboardData({ month, year });
+  console.log("data->", data);
 
   const handleDomainClick = (domainId: string) => {
     router.push(`/calendar?domain=${domainId}`);
@@ -28,7 +29,7 @@ export default function AnalyticsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Loading skeleton for all-time summary */}
           <div className="mb-12">
-            <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 dark:from-indigo-600 dark:to-indigo-700 rounded-2xl p-8 shadow-lg shadow-indigo-500/20 dark:shadow-indigo-900/40 animate-pulse">
+            <div className="bg-linear-to-br from-indigo-500 to-indigo-600 dark:from-indigo-600 dark:to-indigo-700 rounded-2xl p-8 shadow-lg shadow-indigo-500/20 dark:shadow-indigo-900/40 animate-pulse">
               <div className="h-4 w-48 bg-white/20 rounded mb-6"></div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
                 <div>
