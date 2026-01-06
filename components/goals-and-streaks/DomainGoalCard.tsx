@@ -191,21 +191,25 @@ export function DomainGoalCard({
           {/* This Month */}
           <div className="text-center p-3 rounded-lg bg-stone-50 dark:bg-stone-800/50">
             <p className="text-2xl font-bold text-stone-900 dark:text-white mb-1">
-              {domain.thisMonth.percentage}%
+              {domain.thisMonth.daysCompleted}
             </p>
             <p className="text-xs text-stone-600 dark:text-stone-400">
-              This Month
+              Days This Month
             </p>
           </div>
         </div>
 
-        {/* This Month Detail */}
-        <div className="flex items-center justify-between text-sm mb-4">
-          <span className="text-stone-600 dark:text-stone-400">This month</span>
-          <span className="font-medium text-stone-900 dark:text-white">
-            {domain.thisMonth.daysCompleted}/{domain.thisMonth.totalDays} days
-          </span>
-        </div>
+        {/* Monthly Goal Progress */}
+        {hasGoal && domain.goal && (
+          <div className="flex items-center justify-between text-sm mb-4">
+            <span className="text-stone-600 dark:text-stone-400">
+              Monthly target
+            </span>
+            <span className="font-medium text-stone-900 dark:text-white">
+              {domain.thisMonth.daysCompleted}/{domain.goal.target * 4} days
+            </span>
+          </div>
+        )}
 
         {/* View History Toggle */}
         {domain.weeklyHistory.length > 0 && (
