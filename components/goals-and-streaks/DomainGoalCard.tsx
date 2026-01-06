@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { ProgressBar } from "./ProgressBar";
 import { WeeklyHistory } from "./WeeklyHistory";
 import { DomainIcon } from "./DomainIcon";
+import { format, isSameMonth, isSameYear, parse } from "date-fns";
 
 interface DomainGoalCardProps {
   domain: DomainGoal;
@@ -19,6 +20,36 @@ interface DomainGoalCardProps {
   onRemoveGoal?: () => void;
   onViewHistory?: () => void;
   onEditDomain?: () => void;
+}
+
+function formatWeekRange(startDate: string, endDate: string): string {
+  const start = parse(startDate, "yyyy-MM-dd", new Date());
+  const end = parse(endDate, "yyyy-MM-dd", new Date());
+
+  const startDay = format(start, "d");
+  const endDay = format(end, "d");
+  const startMonth = format(start, "MMMM");
+  const startYear = format(start, "yyyy");
+  const endYear = format(end, "yyyy");
+
+  // Same month and year
+  if (isSameMonth(start, end) && isSameYear(start, end)) {
+    return `${startDay}-${endDay} ${startMonth}`;
+  }
+
+  // Different years
+  if (!isSameYear(start, end)) {
+    return `${startDay} ${format(
+      start,
+      "MMM"
+    )} ${startYear} - ${endDay} ${format(end, "MMM")} ${endYear}`;
+  }
+
+  // Different months, same year
+  return `${startDay} ${format(start, "MMM")} - ${endDay} ${format(
+    end,
+    "MMM"
+  )}`;
 }
 
 export function DomainGoalCard({
@@ -77,9 +108,7 @@ export function DomainGoalCard({
             size="sm"
             onClick={onSetGoal}
             className={
-              hasGoal
-                ? ""
-                : `${colors.bg} ${colors.hover} text-white border-0`
+              hasGoal ? "" : `${colors.bg} ${colors.hover} text-white border-0`
             }
           >
             {hasGoal ? "Edit Goal" : "Set Goal"}
@@ -109,7 +138,12 @@ export function DomainGoalCard({
             {isGoalAchieved && !isGoalExceeded && (
               <div className="mt-3 px-3 py-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800">
                 <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">
-                  Goal achieved! Keep it up! 🎉
+                  Goal achieved for the week{" "}
+                  {formatWeekRange(
+                    domain.currentWeek.weekStart,
+                    domain.currentWeek.weekEnd
+                  )}
+                  ! Keep it up! 🎉
                 </p>
               </div>
             )}
@@ -128,9 +162,7 @@ export function DomainGoalCard({
           {/* Current Streak */}
           <div className="text-center p-3 rounded-lg bg-stone-50 dark:bg-stone-800/50">
             <div className="flex items-center justify-center gap-1 mb-1">
-              {hasActiveStreak && (
-                <Flame className={`size-4 ${colors.text}`} />
-              )}
+              {hasActiveStreak && <Flame className={`size-4 ${colors.text}`} />}
               <p
                 className={`text-2xl font-bold ${
                   hasActiveStreak
@@ -213,4 +245,3 @@ export function DomainGoalCard({
     </div>
   );
 }
-
