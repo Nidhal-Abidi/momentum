@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Momentum
+
+A modern habit tracking application that helps you visualize and maintain balance across all areas of your life. View multiple life domains side-by-side in calendar grids to instantly spot which areas need attention.
+
+## Features
+
+- **Side-by-Side Calendar View** — Track multiple life domains simultaneously with visual completion indicators
+- **Domain Management** — Create and customize life areas (Career, Health, Learning, etc.) with colors and icons
+- **Goals & Streaks** — Set weekly targets and maintain consecutive goal achievement streaks
+- **Analytics Dashboard** — Visualize completion rates and identify patterns across all domains
+- **Yearly Views** — Zoom into any domain to see a full year of progress at a glance
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router) + React 19 + TypeScript
+- **Database:** PostgreSQL with Prisma ORM (Neon serverless)
+- **Authentication:** NextAuth v5 with credential-based auth
+- **State Management:** TanStack Query (React Query)
+- **Styling:** Tailwind CSS v4 + Shadcn components
+- **Charts:** Recharts for analytics visualization
+- **Testing:** Vitest + React Testing Library
+
+## Project Structure
+
+```
+app/
+├── (auth)/           # Login & signup pages
+├── (protected)/      # Authenticated routes (calendar, domains, goals, analytics)
+└── api/              # REST API routes
+components/           # Feature-based components
+├── analytics/        # Dashboard & charts
+├── calendar/         # Calendar views & interactions
+├── domains/          # Domain management
+└── goals-and-streaks/
+lib/
+├── hooks/            # Custom React Query hooks
+├── types/            # TypeScript definitions
+└── utils/            # Helper functions
+prisma/               # Database schema & migrations
+```
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 20+ and pnpm
+- PostgreSQL database (or Neon account)
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Set up environment variables:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# .env.local
+DATABASE_URL="postgresql://..."
+AUTH_SECRET="your-secret-key"
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Run database migrations:
 
-## Learn More
+```bash
+pnpm prisma migrate dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+5. Start the development server:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Open [http://localhost:3000](http://localhost:3000) to view the app.
 
-## Deploy on Vercel
+## Available Scripts
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `pnpm dev` — Start development server
+- `pnpm build` — Build for production
+- `pnpm start` — Run production server
+- `pnpm test` — Run tests with Vitest
+- `pnpm lint` — Run ESLint
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Architecture Highlights
+
+- **Server Components** — Leverages React Server Components for optimal performance
+- **API Routes** — RESTful endpoints with proper error handling and validation
+- **Optimistic Updates** — Instant UI feedback with React Query optimistic updates
+- **Type Safety** — End-to-end TypeScript with Prisma-generated types
+- **Component Architecture** — Modular, feature-based organization with clear separation of concerns
+
+## License
+
+Private project.
