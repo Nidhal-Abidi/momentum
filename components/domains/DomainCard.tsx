@@ -123,9 +123,9 @@ export function DomainCard({ domain, onSelect, onDelete }: DomainCardProps) {
             {domain.name}
           </h3>
           <div className="flex items-center justify-center gap-4 mt-2 text-sm text-stone-600 dark:text-stone-400">
-            <span>{domain.totalCompletions} days</span>
+            <span>{domain.totalCompletions} days completed</span>
             <span className="w-1 h-1 rounded-full bg-stone-400" />
-            <span>{domain.currentStreak} week streak</span>
+            <span>{domain.currentStreak}-week streak</span>
           </div>
         </div>
       </div>
