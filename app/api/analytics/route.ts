@@ -86,17 +86,12 @@ export async function GET(req: Request) {
 
     if (domains.length === 0) {
       // Return empty state for users with no domains
-      const accountAgeDays = Math.max(
-        differenceInDays(today, startOfDay(user.createdAt)),
-        1
-      );
-
       return NextResponse.json({
         allTime: {
           totalDaysTracked: 0,
           overallCompletionRate: 0,
           accountStartDate: format(user.createdAt, "yyyy-MM-dd"),
-          accountAgeDays: accountAgeDays,
+          longestDailyStreak: 0,
         },
         currentMonth: monthInfo,
         domainStats: [],
@@ -125,11 +120,58 @@ export async function GET(req: Request) {
     const avgCompletionsPerDay = totalCompletions / accountAgeDays;
     const overallCompletionRate = Math.round(avgCompletionsPerDay * 100);
 
+    // Calculate longest daily streak (consecutive days with at least one completion across ANY domain)
+    // Get all unique dates where user had completions (any domain counts)
+    const completionDates = await prisma.completion.findMany({
+      where: {
+        domain: {
+          userId: session.user.id,
+        },
+      },
+      select: {
+        date: true,
+      },
+      orderBy: {
+        date: "asc",
+      },
+    });
+
+    // Extract unique dates and convert to comparable format
+    const uniqueDates = Array.from(
+      new Set(
+        completionDates.map((c) => format(startOfDay(c.date), "yyyy-MM-dd"))
+      )
+    ).sort();
+
+    // Calculate longest consecutive streak
+    let longestDailyStreak = 0;
+    let currentStreak = 0;
+
+    for (let i = 0; i < uniqueDates.length; i++) {
+      if (i === 0) {
+        currentStreak = 1;
+      } else {
+        const prevDate = new Date(uniqueDates[i - 1]);
+        const currDate = new Date(uniqueDates[i]);
+        const daysDiff = differenceInDays(currDate, prevDate);
+
+        if (daysDiff === 1) {
+          // Consecutive day
+          currentStreak++;
+        } else {
+          // Streak broken
+          longestDailyStreak = Math.max(longestDailyStreak, currentStreak);
+          currentStreak = 1;
+        }
+      }
+    }
+    longestDailyStreak = Math.max(longestDailyStreak, currentStreak);
+
     const allTime: AllTimeStats = {
       totalDaysTracked: totalCompletions,
       overallCompletionRate: overallCompletionRate, // Now represents avg completions/day * 100
       accountStartDate: format(user.createdAt, "yyyy-MM-dd"),
-      accountAgeDays: accountAgeDays,
+      longestDailyStreak: longestDailyStreak,
     };
 
     // =========================================================================

@@ -9,8 +9,8 @@ export interface AllTimeStats {
   overallCompletionRate: number;
   /** ISO date string when the account was created */
   accountStartDate: string;
-  /** Number of days since account creation */
-  accountAgeDays: number;
+  /** Longest streak of consecutive days with at least one completion across any domain */
+  longestDailyStreak: number;
 }
 
 export interface MonthInfo {

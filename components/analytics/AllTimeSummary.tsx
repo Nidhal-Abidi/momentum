@@ -5,13 +5,6 @@ interface AllTimeSummaryProps {
 }
 
 export function AllTimeSummary({ stats }: AllTimeSummaryProps) {
-  const startDate = new Date(stats.accountStartDate);
-  const formattedDate = startDate.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-
   // Convert the rate back to actual average (it's stored as avg * 100)
   const avgPerDay = (stats.overallCompletionRate / 100).toFixed(1);
 
@@ -48,11 +41,13 @@ export function AllTimeSummary({ stats }: AllTimeSummaryProps) {
         <div>
           <div className="flex items-baseline gap-2 mb-1">
             <span className="text-4xl font-bold tabular-nums">
-              {stats.accountAgeDays}
+              {stats.longestDailyStreak}
             </span>
             <span className="text-indigo-200 text-sm font-medium">days</span>
           </div>
-          <p className="text-indigo-200 text-sm">Since {formattedDate}</p>
+          <p className="text-indigo-200 text-sm">
+            Most consecutive days active
+          </p>
         </div>
       </div>
     </div>
