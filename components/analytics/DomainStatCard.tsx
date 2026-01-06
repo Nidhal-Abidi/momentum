@@ -87,7 +87,7 @@ export function DomainStatCard({ stat, onClick }: DomainStatCardProps) {
       onClick={() => onClick?.()}
       className={`${colors.bg} ${colors.border} border rounded-xl p-6 text-left hover:shadow-lg hover:scale-[1.02] transition-all duration-200 w-full group`}
     >
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 w-full flex-wrap">
         <div className="flex items-center gap-3">
           <div className={`w-3 h-3 rounded-full ${colors.dot} shadow-sm`}></div>
           <h3 className={`font-semibold ${colors.text} text-lg`}>
@@ -157,7 +157,7 @@ export function DomainStatCard({ stat, onClick }: DomainStatCardProps) {
 
         {/* Last Month */}
         <div className="pt-3 border-t border-stone-200/50 dark:border-stone-700/50">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap">
             <span className="text-xs font-medium text-stone-500 dark:text-stone-500">
               Last Month
             </span>
