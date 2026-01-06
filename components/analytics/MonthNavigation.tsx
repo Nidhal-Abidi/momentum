@@ -1,4 +1,4 @@
-import type { MonthInfo } from "@/lib/types/dashboard";
+import type { MonthInfo } from "@/lib/types/analytics";
 
 interface MonthNavigationProps {
   currentMonth: MonthInfo;

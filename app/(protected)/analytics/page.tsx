@@ -1,10 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Dashboard } from "@/components/dashboard";
-import { useDashboardData, useMonthNavigation } from "@/lib/hooks/dashboard";
+import { Dashboard } from "@/components/analytics";
+import { useDashboardData, useMonthNavigation } from "@/lib/hooks/analytics";
 
-export default function DashboardPage() {
+export default function AnalyticsPage() {
   const router = useRouter();
   const { month, year, goToPreviousMonth, goToNextMonth, canGoNext } =
     useMonthNavigation();
@@ -83,12 +83,12 @@ export default function DashboardPage() {
             <div className="mx-auto max-w-md space-y-4">
               <div className="text-6xl">⚠️</div>
               <h2 className="text-2xl font-semibold text-red-900 dark:text-red-100">
-                Failed to Load Dashboard
+                Failed to Load Analytics
               </h2>
               <p className="text-red-700 dark:text-red-300">
                 {error instanceof Error
                   ? error.message
-                  : "An error occurred while loading the dashboard data."}
+                  : "An error occurred while loading the analytics data."}
               </p>
               <button
                 onClick={() => window.location.reload()}
@@ -124,7 +124,7 @@ export default function DashboardPage() {
     );
   }
 
-  // Main dashboard with data
+  // Main analytics with data
   return (
     <Dashboard
       allTime={data.allTime}

@@ -19,7 +19,7 @@ const icons: Record<string, React.ComponentType<{ className?: string }>> = {
   Calendar: Calendar,
   Domains: FolderKanban,
   "Goals & Streaks": Target,
-  Dashboard: BarChart3,
+  Analytics: BarChart3,
 };
 
 export function MainNav({

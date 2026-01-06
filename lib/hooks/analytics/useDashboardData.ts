@@ -4,7 +4,7 @@ import type {
   MonthInfo,
   DomainStat,
   WeeklyData,
-} from "@/lib/types/dashboard";
+} from "@/lib/types/analytics";
 
 interface DashboardData {
   allTime: AllTimeStats;
@@ -20,14 +20,14 @@ interface UseDashboardDataParams {
 
 export function useDashboardData({ month, year }: UseDashboardDataParams) {
   return useQuery<DashboardData>({
-    queryKey: ["dashboard", month, year],
+    queryKey: ["analytics", month, year],
     queryFn: async () => {
       const response = await fetch(
-        `/api/dashboard?month=${month}&year=${year}`
+        `/api/analytics?month=${month}&year=${year}`
       );
 
       if (!response.ok) {
-        throw new Error("Failed to fetch dashboard data");
+        throw new Error("Failed to fetch analytics data");
       }
 
       return response.json();

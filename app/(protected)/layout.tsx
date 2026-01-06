@@ -31,9 +31,9 @@ export default function ProtectedLayout({
       isActive: pathname === "/goals-and-streaks",
     },
     {
-      label: "Dashboard",
-      href: "/dashboard",
-      isActive: pathname === "/dashboard",
+      label: "Analytics",
+      href: "/analytics",
+      isActive: pathname === "/analytics",
     },
   ];
 

@@ -1,4 +1,4 @@
-import type { AllTimeStats } from "@/lib/types/dashboard";
+import type { AllTimeStats } from "@/lib/types/analytics";
 
 interface AllTimeSummaryProps {
   stats: AllTimeStats;

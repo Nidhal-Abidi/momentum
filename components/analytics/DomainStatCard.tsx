@@ -1,4 +1,4 @@
-import type { DomainStat } from "@/lib/types/dashboard";
+import type { DomainStat } from "@/lib/types/analytics";
 
 interface DomainStatCardProps {
   stat: DomainStat;

@@ -1,4 +1,4 @@
-import type { DashboardProps } from "@/lib/types/dashboard";
+import type { DashboardProps } from "@/lib/types/analytics";
 import { AllTimeSummary } from "./AllTimeSummary";
 import { MonthNavigation } from "./MonthNavigation";
 import { DomainStatCard } from "./DomainStatCard";

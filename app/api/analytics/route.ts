@@ -7,7 +7,7 @@ import type {
   DomainStat,
   WeeklyData,
   MonthlyCompletion,
-} from "@/lib/types/dashboard";
+} from "@/lib/types/analytics";
 import { format } from "date-fns";
 
 // Helper function to get days in a month
@@ -40,7 +40,7 @@ function formatDateRange(
   return `${monthName} ${startDay}-${endDay}`;
 }
 
-// GET /api/dashboard - Get dashboard analytics data
+// GET /api/analytics - Get analytics data
 export async function GET(req: Request) {
   try {
     const session = await auth();
@@ -366,7 +366,7 @@ export async function GET(req: Request) {
       weeklyData,
     });
   } catch (error) {
-    console.error("GET /api/dashboard error:", error);
+    console.error("GET /api/analytics error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

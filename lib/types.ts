@@ -85,4 +85,4 @@ export interface DomainFormData {
 }
 
 // Dashboard types
-export * from "./types/dashboard";
+export * from "./types/analytics";

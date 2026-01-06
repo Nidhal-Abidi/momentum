@@ -8,7 +8,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import type { WeeklyData, DomainStat } from "@/lib/types/dashboard";
+import type { WeeklyData, DomainStat } from "@/lib/types/analytics";
 
 interface WeeklyChartProps {
   weeklyData: WeeklyData[];
