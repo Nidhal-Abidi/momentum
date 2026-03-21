@@ -46,7 +46,7 @@ export default function ProtectedLayout({
   };
 
   const handleSettings = () => {
-    // TODO: Implement settings page
+    // TODO: Implement the settings page
     console.log("Settings clicked");
   };
 
