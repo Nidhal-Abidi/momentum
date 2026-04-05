@@ -1,12 +1,6 @@
 "use client";
-import { useRef, useState, useEffect } from "react";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useMotionValue,
-  useMotionTemplate,
-} from "motion/react";
+import { useRef, useEffect } from "react";
+import { motion, useScroll, useTransform, useMotionValue } from "motion/react";
 
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
