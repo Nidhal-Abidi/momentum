@@ -54,7 +54,9 @@ export const NarrativeSection = () => {
         <div className="grid lg:grid-cols-[45%_55%] gap-16 items-center">
           <div className="space-y-12">
             <h2 className="text-5xl font-black text-slate-900 leading-[1.1] font-headline">
-              Watching your narrative unfold.
+              See your{" "}
+              <span className="text-momentum-primary italic">Momentum</span>{" "}
+              take shape.
             </h2>
             <div className="space-y-8">
               {[
