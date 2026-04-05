@@ -19,7 +19,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Momentum - Habit Tracker",
+  title: "Momentum",
   description: "Track your life domains and build lasting habits",
 };
 
