@@ -1,0 +1,28 @@
+/* Landing-only styles: scoped under .landing-page so the app shell is unchanged. */
+
+.landing-page {
+  min-height: 100vh;
+  background-color: #f6fafe;
+  color: #0f172a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--font-landing-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+.landing-page ::selection {
+  background-color: rgb(0 88 190 / 0.2);
+  color: #0058be;
+}
+
+.landing-page .hero-gradient {
+  background: linear-gradient(135deg, #0058be 0%, #2170e4 100%);
+}
+
+.landing-page .hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.landing-page .hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

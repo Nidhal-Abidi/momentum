@@ -5,9 +5,11 @@ export default auth((req) => {
   const { pathname } = req.nextUrl;
   const isAuthenticated = !!req.auth;
 
-  // Public routes that don't require authentication
-  const publicRoutes = ["/login", "/signup"];
-  const isPublicRoute = publicRoutes.some((route) => pathname.startsWith(route));
+  // Public routes that don't require authentication (never use pathname.startsWith("/") — it matches everything)
+  const isPublicRoute =
+    pathname === "/" ||
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/signup");
 
   // Auth API routes are always accessible
   if (pathname.startsWith("/api/auth")) {
@@ -35,4 +37,3 @@ export default auth((req) => {
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
-
