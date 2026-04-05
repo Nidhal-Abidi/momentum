@@ -1,12 +1,6 @@
 import { cn } from "@/lib/utils";
-import {
-  Activity,
-  AlertTriangle,
-  Briefcase,
-  Eye,
-  GraduationCap,
-  Palette,
-} from "lucide-react";
+import { Activity, Briefcase, Eye, GraduationCap, Palette } from "lucide-react";
+import { OverflowingInboxIcon } from "./OverflowingInboxIcon";
 
 export const ComparisonSection = () => {
   return (
@@ -14,7 +8,7 @@ export const ComparisonSection = () => {
       <div className="lg:w-1/2 bg-[#fff0f0] p-12 lg:p-24 flex flex-col justify-center">
         <div className="max-w-md mx-auto w-full">
           <h3 className="text-3xl font-black text-red-600 mb-8 flex items-center gap-3 font-headline">
-            <AlertTriangle className="w-8 h-8" />
+            <OverflowingInboxIcon className="size-8" />
             Drowning in tasks
           </h3>
           <div className="space-y-3 opacity-80">
