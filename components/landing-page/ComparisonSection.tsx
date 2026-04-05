@@ -62,31 +62,53 @@ export const ComparisonSection = () => {
           </h3>
           <div className="grid grid-cols-2 gap-4">
             {[
-              { icon: Briefcase, title: "Career", dots: 2, color: "primary" },
-              { icon: Activity, title: "Health", dots: 1, color: "secondary" },
+              {
+                icon: Briefcase,
+                title: "Career",
+                dots: 2,
+                color: "var(--color-momentum-primary)",
+              },
+              {
+                icon: Activity,
+                title: "Health",
+                dots: 1,
+                color: "var(--color-momentum-secondary)",
+              },
               {
                 icon: GraduationCap,
                 title: "Learning",
                 dots: 3,
-                color: "tertiary",
+                color: "var(--color-momentum-tertiary)",
               },
-              { icon: Palette, title: "Creative", dots: 1, color: "accent" },
+              {
+                icon: Palette,
+                title: "Creative",
+                dots: 1,
+                color: "var(--color-momentum-accent)",
+              },
             ].map((domain, i) => {
               const Icon = domain.icon;
-              const colorClass = `momentum-${domain.color}`;
               return (
                 <div
                   key={i}
-                  className={cn(
-                    "p-6 rounded-3xl border transition-all hover:shadow-md",
-                    `bg-${colorClass}/5 border-${colorClass}/10`,
-                  )}
+                  className="p-6 rounded-3xl border transition-all hover:shadow-md"
+                  style={
+                    {
+                      "--card-color": domain.color,
+                      borderColor:
+                        "color-mix(in srgb, var(--card-color) 10%, transparent)",
+                      backgroundColor:
+                        "color-mix(in srgb, var(--card-color) 5%, white)",
+                      "--tw-shadow-color":
+                        "color-mix(in srgb, var(--card-color) 30%, transparent)",
+                    } as React.CSSProperties
+                  }
                 >
                   <div
-                    className={cn(
-                      "size-10 rounded-full flex items-center justify-center mb-4",
-                      `bg-${colorClass}/20 text-${colorClass}`,
-                    )}
+                    className="size-10 rounded-full flex items-center justify-center mb-4"
+                    style={{
+                      color: "var(--card-color)",
+                    }}
                   >
                     <Icon className="size-5" />
                   </div>
@@ -97,12 +119,11 @@ export const ComparisonSection = () => {
                     {[...Array(3)].map((_, idx) => (
                       <div
                         key={idx}
-                        className={cn(
-                          "size-1.5 rounded-full",
-                          idx < domain.dots
-                            ? `bg-${colorClass}`
-                            : "bg-slate-200",
-                        )}
+                        className="size-1.5 rounded-full"
+                        style={{
+                          backgroundColor:
+                            idx < domain.dots ? "var(--card-color)" : "#e2e8f0",
+                        }}
                       />
                     ))}
                   </div>
