@@ -2,6 +2,7 @@
 import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { DomainCard } from "./DomainCard";
+import Link from "next/link";
 
 export const Hero = () => {
   return (
@@ -24,8 +25,8 @@ export const Hero = () => {
           focuses on 4 areas of your life you are actually growing in.
         </p>
         <div className="flex flex-wrap items-center gap-6 pt-4">
-          <button className="px-8 py-4 hero-gradient text-white rounded-full font-bold text-lg shadow-lg shadow-momentum-primary/20 hover:shadow-momentum-primary/40 transition-all active:scale-95 transform">
-            Start Tracking Free
+          <button className="cursor-pointer px-8 py-4 hero-gradient text-white rounded-full font-bold text-lg shadow-lg shadow-momentum-primary/20 hover:shadow-momentum-primary/40 transition-all active:scale-95 transform">
+            <Link href="signup">Start Tracking Free</Link>
           </button>
           <a
             href="#how-it-works"
