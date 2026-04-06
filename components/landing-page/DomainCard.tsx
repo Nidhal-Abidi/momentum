@@ -36,8 +36,7 @@ export const DomainCard = ({
         </span>
         <span
           className={cn(
-            "px-3 py-1 text-[10px] font-black rounded-full bg-opacity-10",
-            color.replace("bg-", "text-"),
+            "px-3 py-1 text-[10px] font-black rounded-full bg-opacity-10 text-white",
             color.replace("bg-", "bg-"),
           )}
         >
