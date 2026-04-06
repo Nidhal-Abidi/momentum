@@ -1,5 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export const Navbar = () => {
@@ -27,21 +28,9 @@ export const Navbar = () => {
           </span>
         </div>
 
-        <div className="hidden md:flex items-center gap-8">
-          {["Features", "How it Works", "Pricing"].map((item) => (
-            <a
-              key={item}
-              href={`#${item.toLowerCase().replace(/\s+/g, "-")}`}
-              className="font-headline font-medium text-sm tracking-wide text-slate-600 hover:text-momentum-primary transition-colors"
-            >
-              {item}
-            </a>
-          ))}
-        </div>
-
         <div className="flex items-center gap-4">
           <button className="font-headline font-semibold text-sm tracking-wide text-momentum-primary hover:opacity-80 transition-all active:scale-95">
-            Sign Up
+            <Link href="/signup">Sign Up</Link>
           </button>
         </div>
       </div>
