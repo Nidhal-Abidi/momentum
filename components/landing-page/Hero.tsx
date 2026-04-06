@@ -39,7 +39,7 @@ export const Hero = () => {
       </motion.div>
 
       <div className="relative">
-        <div className="relative w-full aspect-square max-w-[500px] mx-auto bg-linear-to-br from-blue-50/80 to-white rounded-3xl overflow-hidden shadow-2xl shadow-blue-500/5 flex items-center justify-center p-6">
+        <div className="relative w-full max-w-[500px] mx-auto rounded-3xl shadow-2xl shadow-blue-500/5 flex items-center justify-center p-6">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_70%)]" />
 
           <div className="relative w-full h-full flex flex-col gap-4 justify-center">

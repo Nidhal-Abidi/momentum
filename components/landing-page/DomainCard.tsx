@@ -25,11 +25,11 @@ export const DomainCard = ({
     initial={{ opacity: 0, y: 20, rotate }}
     animate={{ opacity: 1, y: 0, rotate }}
     whileHover={{ rotate: 0, scale: 1.02, zIndex: 50 }}
-    transition={{ delay, duration: 0.5 }}
-    className="w-[90%] bg-white/80 backdrop-blur-xl border border-white/40 p-5 rounded-2xl shadow-xl shadow-slate-200/50 relative overflow-hidden group cursor-default"
+    transition={{ delay, duration: 0.3 }}
+    className="w-[90%] bg-white/80 backdrop-blur-xl border border-white/40 p-3 rounded-2xl shadow-xl shadow-slate-200/50 relative overflow-hidden group cursor-default"
   >
     <div className={cn("absolute left-0 top-0 bottom-0 w-1.5", color)} />
-    <div className="pl-2">
+    <div className="pl-2 pb-2">
       <div className="flex justify-between items-center mb-3">
         <span className="font-bold text-slate-800 text-lg uppercase tracking-tight font-headline">
           {title}
