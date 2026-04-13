@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { DomainCard } from "./DomainCard";
 import Link from "next/link";
+import { Button } from "../shadcn/button";
 
 export const Hero = () => {
   return (
@@ -25,9 +26,9 @@ export const Hero = () => {
           focuses on 4 areas of your life you are actually growing in.
         </p>
         <div className="flex flex-wrap items-center gap-6 pt-4">
-          <button className="cursor-pointer px-8 py-4 hero-gradient text-white rounded-full font-bold text-lg shadow-lg shadow-momentum-primary/20 hover:shadow-momentum-primary/40 transition-all active:scale-95 transform">
+          <Button size="lg" className="cursor-pointer  hero-gradient text-white rounded-full font-bold text-lg shadow-lg shadow-momentum-primary/20 hover:shadow-momentum-primary/40 transition-all active:scale-95 transform" asChild>
             <Link href="signup">Start Tracking Free</Link>
-          </button>
+          </Button>
           <a
             href="#how-it-works"
             className="flex items-center gap-2 text-slate-900 font-bold hover:text-momentum-primary transition-colors group"
@@ -39,7 +40,7 @@ export const Hero = () => {
       </motion.div>
 
       <div className="relative">
-        <div className="relative w-full max-w-[500px] mx-auto rounded-3xl shadow-2xl shadow-blue-500/5 flex items-center justify-center p-6">
+        <div className="relative w-full max-w-125 mx-auto rounded-3xl shadow-2xl shadow-blue-500/5 flex items-center justify-center p-6">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_70%)]" />
 
           <div className="relative w-full h-full flex flex-col gap-4 justify-center">
